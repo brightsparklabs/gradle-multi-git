@@ -1,0 +1,37 @@
+/*
+ * Created by brightSPARK Labs
+ * www.brightsparklabs.com
+ */
+
+// -----------------------------------------------------------------------------
+// PLUGINS
+// -----------------------------------------------------------------------------
+
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy'
+}
+
+// -----------------------------------------------------------------------------
+// PROJECT IDENTIFICATION
+// -----------------------------------------------------------------------------
+
+project.description = 'Gradle plugin to simplify managing multiple git repositories'
+project.ext.url     = 'https://github.com/brightsparklabs/gradle-multi-git'
+project.ext.scm     = 'scm:git@github.com:brightsparklabs/gradle-multi-git.git'
+project.group       = 'com.brightsparklabs'
+project.version     = 'git describe --dirty'.execute().text.trim()
+
+// -----------------------------------------------------------------------------
+// CONFIGURATION
+// -----------------------------------------------------------------------------
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'com.brightsparklabs.gradle.multi-git'
+            implementationClass = 'com.brightsparklabs.gradle.multigit.MultiGitPlugin'
+        }
+    }
+}
+
