@@ -6,6 +6,9 @@ Gradle plugin to simplify managing multiple git repositories.
 
 ```shell
 ./gradlew build
+
+# publish
+./gradlew publishPlugins
 ```
 
 # Usage

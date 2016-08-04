@@ -10,27 +10,50 @@
 plugins {
     id 'java-gradle-plugin'
     id 'groovy'
+    id 'com.gradle.plugin-publish' version '0.9.5'
 }
 
 // -----------------------------------------------------------------------------
 // PROJECT IDENTIFICATION
 // -----------------------------------------------------------------------------
 
-project.description = 'Gradle plugin to simplify managing multiple git repositories'
-project.ext.url     = 'https://github.com/brightsparklabs/gradle-multi-git'
-project.ext.scm     = 'scm:git@github.com:brightsparklabs/gradle-multi-git.git'
-project.group       = 'com.brightsparklabs'
-project.version     = 'git describe --dirty'.execute().text.trim()
+project.description  = 'Gradle plugin to simplify managing multiple git repositories'
+project.group        = 'com.brightsparklabs'
+project.version      = 'git describe --dirty'.execute().text.trim()
+
+project.ext.pluginId = 'com.brightsparklabs.gradle.multi-git'
+project.ext.scm      = 'scm:git@github.com:brightsparklabs/gradle-multi-git.git'
+project.ext.url      = 'https://github.com/brightsparklabs/gradle-multi-git'
 
 // -----------------------------------------------------------------------------
-// CONFIGURATION
+// CONFIGURATION: java-gradle-plugin
 // -----------------------------------------------------------------------------
 
 gradlePlugin {
     plugins {
         simplePlugin {
-            id = 'com.brightsparklabs.gradle.multi-git'
+            id = project.pluginId
             implementationClass = 'com.brightsparklabs.gradle.multigit.MultiGitPlugin'
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// CONFIGURATION: com.gradle.plugin-publish
+// -----------------------------------------------------------------------------
+
+// The configuration example below shows the minimum required properties
+// configured to publish your plugin to the plugin portal
+pluginBundle {
+    website = project.url
+    vcsUrl = project.scm
+    tags = ['git', 'multiple', 'management']
+
+    plugins {
+        multiGitPlugin {
+            id = project.pluginId
+            displayName = 'Gradle Multi Git plugin'
+            description = project.description
         }
     }
 }
