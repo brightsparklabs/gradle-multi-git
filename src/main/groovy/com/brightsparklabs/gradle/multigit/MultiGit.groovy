@@ -32,14 +32,23 @@ class MultiGitPlugin implements Plugin<Project> {
         project.task('gitClone') {
             group = "brightSPARK Labs - Git"
             description = "Clones all git repositories which constitute this project."
-
             doLast {
-                config.repositories.each { name, uri ->
+                config.repositories.each { name, data ->
                     def repoDir = new File(config.repositoriesDir, name)
                     if (repoDir.exists()) {
                         return
                     }
-                    project.gitExec('.', ['clone', uri, repoDir.absolutePath])
+                    if (data instanceof List) {
+                        if (data.size() == 1) {
+                            project.gitExec('.', ['clone', data[0] , repoDir.absolutePath])
+                        }
+                        else {
+                            project.gitExec('.', ['clone', '--depth', data[1], data[0], repoDir.absolutePath])
+                        }
+                    }
+                    else {
+                        project.gitExec('.', ['clone', data , repoDir.absolutePath])
+                    }
                 }
             }
         }
@@ -143,4 +152,3 @@ class MultiGitPlugin implements Plugin<Project> {
         }
     }
 }
-

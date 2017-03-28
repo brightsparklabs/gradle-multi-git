@@ -31,7 +31,7 @@ Use the following configuration block to configure the plugin:
 multiGitPluginConfig {
     repositoriesDir = new File('subprojects')
     repositories = [
-        'project-alpha': 'git@github.com:brightsparklabs/project-alpha.git',
+        'project-alpha': ['git@github.com:brightsparklabs/project-alpha.git', 4],
         'project-bravo': 'git@github.com:brightsparklabs/project-bravo.git',
     ]
 }
@@ -41,7 +41,9 @@ Where:
 
 - `repositoriesDir` is the directory to checkout the git repositories to.
 - `repositories` is a map of `repository name` to `repository location`. Each
-  repository will be checked out to the `repositoriesDir`.
+  repository will be checked out to the `repositoriesDir`. If you want a shallow clone
+  of your repository, map a list to `repository name` containing `repository location`
+  and the depth level.
 
 # Tasks
 
@@ -70,4 +72,3 @@ The following methods are added to the project:
 # Licenses
 
 Refer to the `LICENSE` file for details.
-
