@@ -43,7 +43,7 @@ class MultiGitPlugin implements Plugin<Project> {
                             project.gitExec('.', ['clone', data[0] , repoDir.absolutePath])
                         }
                         else {
-                            project.gitExec('.', ['clone', '--depth', data[1], data[0], repoDir.absolutePath])
+                            project.gitExec('.', ['clone', '--depth', data[1], '--no-single-branch', data[0], repoDir.absolutePath])
                         }
                     }
                     else {
