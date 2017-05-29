@@ -9,10 +9,12 @@ import org.junit.rules.TemporaryFolder
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class ConfigurationTest {
+class MultiGitPluginTest {
 
     @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder();
+    public final TemporaryFolder testProjectDir = new TemporaryFolder()
+
+    private final String repo = "https://github.com/brightsparklabs/gradle-multi-git.git"
 
     private File buildFile
 
@@ -41,16 +43,14 @@ class ConfigurationTest {
         return shouldSucceed ? runner.build() : runner.buildAndFail()
     }
 
-
-
     @Test
     public void basic_configuration() {
         buildFile.append("""\
             multiGitPluginConfig {
                 repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
-                    'project-alpha': 'git@github.com:praqma-thi/project-alpha.git',
-                    'project-bravo': ['git@github.com:praqma-thi/project-bravo.git'],
+                    'project-alpha': '$repo',
+                    'project-bravo': ['$repo'],
                 ]
             }
             """.stripIndent())
@@ -65,8 +65,8 @@ class ConfigurationTest {
             multiGitPluginConfig {
                 repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
-                    'project-alpha': 'git@github.com:praqma-thi/project-alpha.git',
-                    'project-bravo': ['git@github.com:praqma-thi/project-bravo.git', 1],
+                    'project-alpha': '$repo',
+                    'project-bravo': ['$repo', 1],
                 ]
             }
             """.stripIndent())
@@ -85,11 +85,11 @@ class ConfigurationTest {
                 repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
                     'project-alpha': [
-                            url: 'git@github.com:praqma-thi/project-alpha.git'
+                            url: '$repo'
                         ],
                     'project-bravo': [
-                            url: 'git@github.com:praqma-thi/project-bravo.git',
-                            options: "--depth 1 --branch develop"
+                            url: '$repo',
+                            options: ['--depth', '1', '--branch', 'develop']
                         ],
                 ]
             }

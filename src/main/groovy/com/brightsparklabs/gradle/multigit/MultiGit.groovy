@@ -45,7 +45,7 @@ class MultiGitPlugin implements Plugin<Project> {
                             if (data.size() == 1) {
                                 repo.putAll([url: data[0]])
                             } else {
-                                repo.putAll([url: data[0], options: "--depth ${data[1]}"])
+                                repo.putAll([url: data[0], options: ["--depth", data[1], "--no-single-branch"]])
                             }
                             break;
                         // Short entry
@@ -63,7 +63,7 @@ class MultiGitPlugin implements Plugin<Project> {
                     repoDir.mkdirs()
 
                     def cmd = ['clone']
-                    if (repo.containsKey('options')) cmd.addAll(repo.options.split(' '))
+                    if (repo.containsKey('options')) cmd.addAll(repo.options)
                     cmd.addAll(repo.url, repoDir.absolutePath)
                     project.gitExec('.', cmd)
                 }

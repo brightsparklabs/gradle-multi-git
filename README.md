@@ -34,7 +34,7 @@ multiGitPluginConfig {
         'project-alpha': 'git@github.com:brightsparklabs/project-alpha.git',
         'project-bravo': [
             url: 'git@github.com:brightsparklabs/project-bravo.git',
-            options: '--depth 3 --branch develop'
+            options: ['--depth', '3', '--branch', 'develop']
         ],
     ]
 }
@@ -46,7 +46,7 @@ Where:
 - `repositories` is a map of `repository name` to `repository location`.
 - Entries in `repositories` take the repository URL, or a map including:
   - `url`: the repository URL
-  - `options`: clone options, e.g. `--depth` or `--branch`
+  - `options`: clone options, e.g. `['--depth', '1', '--branch', 'stable']`
 
 # Tasks
 
