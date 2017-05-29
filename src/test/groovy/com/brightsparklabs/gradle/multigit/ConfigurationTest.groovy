@@ -41,11 +41,13 @@ class ConfigurationTest {
         return shouldSucceed ? runner.build() : runner.buildAndFail()
     }
 
+
+
     @Test
     public void basic_configuration() {
         buildFile.append("""\
             multiGitPluginConfig {
-                repositoriesDir = new File('subprojects')
+                repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
                     'project-alpha': 'git@github.com:praqma-thi/project-alpha.git',
                     'project-bravo': ['git@github.com:praqma-thi/project-bravo.git'],
@@ -54,18 +56,14 @@ class ConfigurationTest {
             """.stripIndent())
 
         BuildResult result = build(true, 'gitClone', '--stacktrace')
-
         assert result.task(':gitClone').outcome == SUCCESS
-        println result.output
-        println testProjectDir.root.listFiles()
-        assert testProjectDir.root.listFiles().size() == 0
     }
 
     @Test
     public void depth_configuration() {
         buildFile.append("""\
             multiGitPluginConfig {
-                repositoriesDir = new File('subprojects')
+                repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
                     'project-alpha': 'git@github.com:praqma-thi/project-alpha.git',
                     'project-bravo': ['git@github.com:praqma-thi/project-bravo.git', 1],
@@ -74,30 +72,36 @@ class ConfigurationTest {
             """.stripIndent())
 
         BuildResult result = build(true, 'gitClone')
-
         assert result.task(':gitClone').outcome == SUCCESS
+
+        def log = "git log --oneline".execute([], new File(testProjectDir.root, 'project-bravo')).text
+        assert log.readLines().size() == 1
     }
 
     @Test
     public void map_configuration() {
         buildFile.append("""\
             multiGitPluginConfig {
-                repositoriesDir = new File('subprojects')
+                repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
                     'project-alpha': [
                             url: 'git@github.com:praqma-thi/project-alpha.git'
                         ],
                     'project-bravo': [
                             url: 'git@github.com:praqma-thi/project-bravo.git',
-                            depth: 1,
-                            branch: 'develop'
+                            options: "--depth 1 --branch develop"
                         ],
                 ]
             }
             """.stripIndent())
 
         BuildResult result = build(true, 'gitClone')
-
         assert result.task(':gitClone').outcome == SUCCESS
+
+        def log = "git log --oneline".execute([], new File(testProjectDir.root, 'project-bravo')).text
+        assert log.readLines().size() == 1
+
+        def branch = "git branch".execute([], new File(testProjectDir.root, 'project-bravo')).text
+        assert branch.contains("* develop")
     }
 }
