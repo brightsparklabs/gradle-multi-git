@@ -44,13 +44,13 @@ class MultiGitPluginTest {
     }
 
     @Test
-    public void basic_configuration() {
+    public void configuration_standard() {
         buildFile.append("""\
             multiGitPluginConfig {
                 repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
                     'project-alpha': '$repo',
-                    'project-bravo': ['$repo'],
+                    'project-bravo': '$repo',
                 ]
             }
             """.stripIndent())
@@ -60,12 +60,12 @@ class MultiGitPluginTest {
     }
 
     @Test
-    public void depth_configuration() {
+    public void configuration_with_depth() {
         buildFile.append("""\
             multiGitPluginConfig {
                 repositoriesDir = new File('${testProjectDir.root.absolutePath}')
                 repositories = [
-                    'project-alpha': '$repo',
+                    'project-alpha': ['$repo'],
                     'project-bravo': ['$repo', 1],
                 ]
             }
@@ -79,7 +79,7 @@ class MultiGitPluginTest {
     }
 
     @Test
-    public void map_configuration() {
+    public void configuration_with_options() {
         buildFile.append("""\
             multiGitPluginConfig {
                 repositoriesDir = new File('${testProjectDir.root.absolutePath}')
