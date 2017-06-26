@@ -31,8 +31,11 @@ Use the following configuration block to configure the plugin:
 multiGitPluginConfig {
     repositoriesDir = new File('subprojects')
     repositories = [
-        'project-alpha': ['git@github.com:brightsparklabs/project-alpha.git', 4],
-        'project-bravo': 'git@github.com:brightsparklabs/project-bravo.git',
+        'project-alpha': 'git@github.com:brightsparklabs/project-alpha.git',
+        'project-bravo': [
+            url: 'git@github.com:brightsparklabs/project-bravo.git',
+            options: ['--depth', '3', '--branch', 'develop']
+        ],
     ]
 }
 ```
@@ -40,10 +43,10 @@ multiGitPluginConfig {
 Where:
 
 - `repositoriesDir` is the directory to checkout the git repositories to.
-- `repositories` is a map of `repository name` to `repository location`. Each
-  repository will be checked out to the `repositoriesDir`. If you want a shallow clone
-  of your repository, map a list to `repository name` containing `repository location`
-  and the depth level.
+- `repositories` is a map of `repository name` to `repository location`.
+- Entries in `repositories` take the repository URL, or a map including:
+  - `url`: the repository URL
+  - `options`: clone options, e.g. `['--depth', '1', '--branch', 'stable']`
 
 # Tasks
 

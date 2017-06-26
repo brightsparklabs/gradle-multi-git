@@ -32,23 +32,40 @@ class MultiGitPlugin implements Plugin<Project> {
         project.task('gitClone') {
             group = "brightSPARK Labs - Git"
             description = "Clones all git repositories which constitute this project."
+
             doLast {
-                config.repositories.each { name, data ->
-                    def repoDir = new File(config.repositoriesDir, name)
-                    if (repoDir.exists()) {
-                        return
+                def toClone = config.repositories.collect { name, data ->
+                    def repo = [name: name]
+                    switch (data) {
+                        case Map:
+                            repo.putAll(data)
+                            break;
+                        // Backwards compatibility
+                        case List:
+                            if (data.size() == 1) {
+                                repo.putAll([url: data[0]])
+                            } else {
+                                repo.putAll([url: data[0], options: ["--depth", data[1], "--no-single-branch"]])
+                            }
+                            break;
+                        // Short entry
+                        default:
+                            repo.putAll([url: data])
+                            break;
                     }
-                    if (data instanceof List) {
-                        if (data.size() == 1) {
-                            project.gitExec('.', ['clone', data[0] , repoDir.absolutePath])
-                        }
-                        else {
-                            project.gitExec('.', ['clone', '--depth', data[1], '--no-single-branch', data[0], repoDir.absolutePath])
-                        }
-                    }
-                    else {
-                        project.gitExec('.', ['clone', data , repoDir.absolutePath])
-                    }
+                    return repo
+                }
+
+                toClone.each { repo ->
+                    def repoDir = new File(config.repositoriesDir, repo.name)
+                    if (repoDir.exists()) return
+
+                    repoDir.mkdirs()
+
+                    def cmd = ['clone']
+                    if (repo.containsKey('options')) cmd.addAll(repo.options)
+                    cmd.addAll(repo.url, repoDir.absolutePath)
+                    project.gitExec('.', cmd)
                 }
             }
         }
